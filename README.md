@@ -6,6 +6,7 @@ Sesh is a coding session management tool.
 - `tmux`
 - `Neovim`
 - `OpenCode`
+- `fzf`
 
 The motivation for this tool was to streamline my local development workflow with one command for a new task.
 When starting a new task on linear:
