@@ -38,10 +38,11 @@ func Start(args []string) {
 	worktreeDir := fmt.Sprintf("%s/dev/.worktrees", home)
 	worktree, err := Picker()
 	cwdBase := filepath.Base(cwd)
-	worktreePath := fmt.Sprintf("%s/%s-%s", worktreeDir, cwdBase, args[1])
+	var worktreePath string = worktree.Path
 
 	// New worktree
 	if err != nil {
+		worktreePath = fmt.Sprintf("%s/%s-%s", worktreeDir, cwdBase, args[1])
 		createWorktree(*worktree, worktreePath)
 	}
 	sessionName := fmt.Sprintf("ENG%s", args[1])
