@@ -1,11 +1,14 @@
 package commands
 
 import (
+	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sesh/git"
 	"sesh/tmux"
+	"strings"
 )
 
 func createWorktree(worktree Worktree, worktreePath string) {
@@ -20,7 +23,24 @@ func createWorktree(worktree Worktree, worktreePath string) {
 	}
 }
 
+func parseArgs(args []string) string {
+	scanner := bufio.NewScanner(os.Stdin)
+	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
+	sessionName := startCmd.String("s", "", "Name of session (required)")
+	startCmd.Parse(args)
+	
+	if *sessionName == "" {
+		fmt.Print("Enter Session Name: ")
+		if scanner.Scan() {
+			input := scanner.Text()
+			*sessionName = strings.TrimSpace(input)
+		}
+	}
+	return *sessionName
+}
+
 func Start(args []string) {
+	sessionName := parseArgs(args)
 	cwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println("Couldn't extract CWD. Aborting")
@@ -29,6 +49,7 @@ func Start(args []string) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Couldn't extract user's HOME dir")
+		os.Exit(1)
 	}
 
 	if len(args) > 0 && args[0] != "-n" {
@@ -42,10 +63,9 @@ func Start(args []string) {
 
 	// New worktree
 	if err != nil {
-		worktreePath = fmt.Sprintf("%s/%s-%s", worktreeDir, cwdBase, args[1])
+		worktreePath = fmt.Sprintf("%s/%s-%s", worktreeDir, cwdBase, strings.ToLower(sessionName))
 		createWorktree(*worktree, worktreePath)
 	}
-	sessionName := fmt.Sprintf("ENG%s", args[1])
 	var sessionId string
 	if tmux.HasSession(sessionName) {
 		sessionId = tmux.GetSessionId(sessionName)
