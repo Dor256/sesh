@@ -26,7 +26,7 @@ func createWorktree(worktree Worktree, worktreePath string) {
 func parseArgs(args []string) string {
 	scanner := bufio.NewScanner(os.Stdin)
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
-	sessionName := startCmd.String("s", "", "Name of session (required)")
+	sessionName := startCmd.String("-s", "", "Name of session (required)")
 	startCmd.Parse(args)
 	
 	if *sessionName == "" {
