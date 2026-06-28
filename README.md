@@ -1,6 +1,6 @@
 # Sesh
 
-![Sesh Logo](./sesh-logo.png)
+<img src="./sesh-logo.png" width="300">
 
 Sesh is a coding session management tool.
 
