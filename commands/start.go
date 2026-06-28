@@ -26,7 +26,7 @@ func createWorktree(worktree Worktree, worktreePath string) {
 func parseArgs(args []string) string {
 	scanner := bufio.NewScanner(os.Stdin)
 	startCmd := flag.NewFlagSet("start", flag.ExitOnError)
-	sessionName := startCmd.String("-s", "", "Name of session (required)")
+	sessionName := startCmd.String("s", "", "Name of session (required)")
 	startCmd.Parse(args)
 	
 	if *sessionName == "" {
@@ -52,10 +52,6 @@ func Start(args []string) {
 		os.Exit(1)
 	}
 
-	if len(args) > 0 && args[0] != "-n" {
-		fmt.Printf("Unknown argument %s\n", args[0])
-		os.Exit(1)
-	}
 	worktreeDir := fmt.Sprintf("%s/dev/.worktrees", home)
 	worktree, err := Picker()
 	cwdBase := filepath.Base(cwd)
@@ -72,9 +68,10 @@ func Start(args []string) {
 	} else {
 		sessionId = tmux.Create(sessionName, worktreePath)
 
+		// Rename the default window
+		tmux.RenameWindow(sessionName, "1", "Terminal")
 		tmux.NewWindow(sessionName, "OpenCode", worktreePath, "opencode")
 		tmux.NewWindow(sessionName, "Neovim", worktreePath, "nvim .")
-		tmux.NewWindow(sessionName, "Terminal", worktreePath)
 		tmux.NewWindow(sessionName, "Claude", worktreePath, "claude")
 	}
 
