@@ -1,7 +1,7 @@
 # Sesh
-<center>
+<div align="center">
     <img src="./sesh-logo.png" width="300">
-</center>
+</div>
 
 Sesh is a coding session management tool.
 
