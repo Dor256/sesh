@@ -1,5 +1,7 @@
 # Sesh
 
+![Sesh Logo](./sesh-logo.png)
+
 Sesh is a coding session management tool.
 
 ## Prerequisites
