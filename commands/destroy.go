@@ -1,21 +1,17 @@
 package commands
 
-import (
-	"fmt"
-	"os"
-	"sesh/git"
-	"sesh/tmux"
-)
+import "fmt"
 
-func Destroy(args []string) {
-	worktree, err := Picker()
+func (commander *Commander) Destroy(args []string) error {
+	worktree, err := commander.picker()
 	if err != nil {
 		fmt.Println("Aborting")
-		os.Exit(1)
+		return err
 	}
 	fmt.Println("Killing worktree and session...")
-	sessionId := git.ReadSessionId(worktree.Path)
+	sessionId := commander.gitClient.ReadSessionId(worktree.Path)
 
-	tmux.Kill(sessionId)
-	git.DestroyWorktree(worktree.Path)
+	commander.tmuxClient.Kill(sessionId)
+	commander.gitClient.DestroyWorktree(worktree.Path)
+	return nil
 }

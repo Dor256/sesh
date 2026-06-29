@@ -6,21 +6,20 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sesh/git"
-	"sesh/tmux"
 	"strings"
 )
 
-func createWorktree(worktree Worktree, worktreePath string) {
+func (commander *Commander) createWorktree(worktree Worktree, worktreePath string) error {
 	if worktree.Branch == "" {
 		fmt.Println("Aborting")
-		os.Exit(1)
+		return fmt.Errorf("Branch was not provided")
 	}
-	err := git.CreateWorktree(worktree.Branch, worktreePath)
+	err := commander.gitClient.CreateWorktree(worktree.Branch, worktreePath)
 	if err != nil {
 		fmt.Printf("Git failed: %v\n", err)
-		return
+		return err
 	}
+	return nil
 }
 
 func parseArgs(args []string) string {
@@ -39,47 +38,51 @@ func parseArgs(args []string) string {
 	return *sessionName
 }
 
-func Start(args []string) {
+func (commander *Commander) Start(args []string) error {
 	sessionName := parseArgs(args)
 	cwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println("Couldn't extract CWD. Aborting")
-		os.Exit(1)
+		return err
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Couldn't extract user's HOME dir")
-		os.Exit(1)
+		return err
 	}
 
 	worktreeDir := fmt.Sprintf("%s/dev/.worktrees", home)
-	worktree, err := Picker()
+	worktree, err := commander.picker()
 	cwdBase := filepath.Base(cwd)
 	var worktreePath string = worktree.Path
 
 	// New worktree
 	if err != nil {
 		worktreePath = fmt.Sprintf("%s/%s-%s", worktreeDir, cwdBase, strings.ToLower(sessionName))
-		createWorktree(*worktree, worktreePath)
+		err := commander.createWorktree(*worktree, worktreePath)
+		if err != nil {
+			return err
+		}
 	}
 	var sessionId string
-	if tmux.HasSession(sessionName) {
-		sessionId = tmux.GetSessionId(sessionName)
+	if commander.tmuxClient.HasSession(sessionName) {
+		sessionId = commander.tmuxClient.GetSessionId(sessionName)
 	} else {
-		sessionId = tmux.Create(sessionName, worktreePath)
+		sessionId = commander.tmuxClient.Create(sessionName, worktreePath)
 
 		// Rename the default window
-		tmux.RenameWindow(sessionName, "1", "Terminal")
-		tmux.NewWindow(sessionName, "OpenCode", worktreePath, "opencode")
-		tmux.NewWindow(sessionName, "Neovim", worktreePath, "nvim .")
-		tmux.NewWindow(sessionName, "Claude", worktreePath, "claude")
+		commander.tmuxClient.RenameWindow(sessionName, "1", "Terminal")
+		commander.tmuxClient.NewWindow(sessionName, "OpenCode", worktreePath, "opencode")
+		commander.tmuxClient.NewWindow(sessionName, "Neovim", worktreePath, "nvim .")
+		commander.tmuxClient.NewWindow(sessionName, "Claude", worktreePath, "claude")
 	}
 
-	git.SaveSessionId(worktreePath, sessionId)
+	commander.gitClient.SaveSessionId(worktreePath, sessionId)
 	// If inside tmux switch to session if outside attach to session
 	if os.Getenv("TMUX") != "" {
-		tmux.Switch(sessionName)
+		commander.tmuxClient.Switch(sessionName)
 	} else {
-		tmux.Attach(sessionName)
+		commander.tmuxClient.Attach(sessionName)
 	}
+	return nil
 }
