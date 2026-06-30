@@ -39,6 +39,10 @@ type MockTmux struct {
 	SessionExists bool
 	AttachCalled bool
 	SwitchCalled bool
+	CreatedSessionName string
+	CreatedWorktreePath string
+	RenameWindowCalled bool
+	NewWindowCalledTimes int
 }
 
 func (m *MockTmux) Kill(sessionId string) error {
@@ -56,11 +60,21 @@ func (m *MockTmux) Switch(sessionName string) error {
 	return nil
 }
 
-func (m *MockTmux) Create(sessionName, path string) string { return "" }
+func (m *MockTmux) Create(sessionName, path string) string {
+	m.CreatedSessionName = sessionName
+	m.CreatedWorktreePath = path
+	return m.SessionIdToReturn
+}
 
-func (m *MockTmux) NewWindow(sessionName, windowName, path string, tool ...string) error { return nil }
+func (m *MockTmux) NewWindow(sessionName, windowName, path string, tool ...string) error {
+	m.NewWindowCalledTimes += 1
+	return nil
+}
 
-func (m *MockTmux) RenameWindow(sessionName, oldName, newName string) error { return nil }
+func (m *MockTmux) RenameWindow(sessionName, oldName, newName string) error {
+	m.RenameWindowCalled = true
+	return nil
+}
 
 func (m *MockTmux) HasSession(sessionName string) bool { return m.SessionExists }
 
