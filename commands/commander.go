@@ -25,5 +25,5 @@ type Commander struct {
 }
 
 func NewCommander(tmuxClient TmuxClient, gitClient GitClient) *Commander {
-	return &Commander{gitClient: gitClient, tmuxClient: tmuxClient}
+	return &Commander{gitClient: gitClient, tmuxClient: tmuxClient, picker: Picker}
 }
