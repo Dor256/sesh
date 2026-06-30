@@ -26,7 +26,7 @@ Starts a session
 
 
 ### Destroy
-Destorys a session
+Destroys a session
 
 > `sesh destroy`
 
