@@ -68,6 +68,7 @@ func (commander *Commander) Start(args []string) error {
 	if commander.tmuxClient.HasSession(sessionName) {
 		sessionId = commander.tmuxClient.GetSessionId(sessionName)
 	} else {
+		fmt.Println("Creating session...")
 		sessionId = commander.tmuxClient.Create(sessionName, worktreePath)
 
 		// Rename the default window

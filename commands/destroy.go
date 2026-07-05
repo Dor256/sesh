@@ -11,7 +11,7 @@ func (commander *Commander) Destroy(args []string) error {
 	fmt.Println("Killing worktree and session...")
 	sessionId := commander.gitClient.ReadSessionId(worktree.Path)
 
-	commander.tmuxClient.Kill(sessionId)
 	commander.gitClient.DestroyWorktree(worktree.Path)
+	commander.tmuxClient.Kill(sessionId)
 	return nil
 }
