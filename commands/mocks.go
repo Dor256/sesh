@@ -50,6 +50,8 @@ func (m *MockTmux) Kill(sessionId string) error {
 	return nil
 }
 
+func (m *MockTmux) AttachDefault() error { return nil }
+
 func (m *MockTmux) Attach(sessionName string) error {
 	m.AttachCalled = true
 	return nil
@@ -79,3 +81,5 @@ func (m *MockTmux) RenameWindow(sessionName, oldName, newName string) error {
 func (m *MockTmux) HasSession(sessionName string) bool { return m.SessionExists }
 
 func (m *MockTmux) GetSessionId(sessionName string) string { return m.SessionIdToReturn }
+
+func (m *MockTmux) ListPanes() string { return "" }

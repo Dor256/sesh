@@ -22,6 +22,10 @@ func NewClient() *Client {
 	return &Client{}
 }
 
+func (c *Client) AttachDefault() error {
+	return exec.Command("tmux", "-a").Run()
+}
+
 func (c *Client) Attach(sessionName string) error {
 	return exec.Command("tmux", "attach", "-t", sessionName).Run()
 }
@@ -62,4 +66,10 @@ func (c *Client) HasSession(sessionName string) bool {
 func (c *Client) GetSessionId(sessionName string) string {
 	return execAndPrint("tmux", "display-message", "-t", sessionName, "-p", "#{session_id}")
 }
+
+
+func (c *Client) ListPanes() string {
+	return execAndPrint("tmux", "list-panes", "-a", "-F", "#{session_name} #{window_name} #{pane_current_path}")
+}
+
 
