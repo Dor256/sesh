@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 func execAndPrint(cmd string, args ...string) string {
@@ -23,7 +24,11 @@ func NewClient() *Client {
 }
 
 func (c *Client) AttachDefault() error {
-	return exec.Command("tmux", "-a").Run()
+	tmuxPath, err := exec.LookPath("tmux")
+    if err != nil {
+        return err
+    }
+    return syscall.Exec(tmuxPath, []string{"tmux", "attach"}, os.Environ())
 }
 
 func (c *Client) Attach(sessionName string) error {

@@ -32,8 +32,8 @@ func (commander *Commander) Load(args []string) error {
 		// Tmux state is clean
 		return nil
 	}
-	for session, panes := range(tmuxState) {
-		for idx, pane := range(panes) {
+	for session, panes := range tmuxState {
+		for idx, pane := range panes {
 			if idx == 0 {
 				commander.tmuxClient.Create(session, pane.Path)
 				commander.tmuxClient.RenameWindow(session, "1", pane.Name)
