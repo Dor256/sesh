@@ -26,6 +26,21 @@ func main() {
 		if err != nil {
 			os.Exit(1)
 		}
+	case "setup":
+		err := commander.Setup(userArgs[1:])
+		if err != nil {
+			os.Exit(1)
+		}
+	case "load":
+		err := commander.Load(userArgs[1:])
+		if err != nil {
+			os.Exit(1)
+		}
+	case "save":
+		err := commander.Save(userArgs[1:])
+		if err != nil {
+			os.Exit(1)
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "No such argument %s\n", command)
 		os.Exit(1)

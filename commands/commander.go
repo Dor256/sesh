@@ -6,9 +6,11 @@ type TmuxClient interface {
 	GetSessionId(sessionName string) string
 	Switch(sessionName string) error
 	Attach(sessionName string) error
+	AttachDefault() error
 	RenameWindow(sessionName, windowIndex, windowName string) error
 	NewWindow(sessionName, windowName, worktreePath string, command ...string) error
 	Kill(sessionId string) error
+	ListPanes() string
 }
 
 type GitClient interface {
@@ -21,7 +23,7 @@ type GitClient interface {
 type Commander struct {
 	gitClient  GitClient
 	tmuxClient TmuxClient
-	picker func() (*Worktree, error)
+	picker     func() (*Worktree, error)
 }
 
 func NewCommander(tmuxClient TmuxClient, gitClient GitClient) *Commander {
