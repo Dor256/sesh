@@ -14,6 +14,27 @@ Sesh is a coding session management tool.
 
 The motivation for this tool was to streamline my local development workflow with one command for a new task.
 
+### Setup
+Sets up the Sesh state file and `tmux` hooks.
+
+> `sesh setup`
+
+This is necessary to enable session persistence. Sesh will persist your sessions so if you ever exit you can easily reload the last state.
+
+### Save
+Saves the current `tmux` state.
+
+> `sesh save`
+
+This command is mostly internal and will be run automatically on certain `tmux` hooks. However, you're free to run this to save the current state of the `tmux` session.
+
+### Load
+Loads the last saved state of `tmux`
+
+> `sesh load`
+
+This command will load the last saved `tmux` state. It currently only spins up the panes and opens them at the last known directory.
+
 ### Start
 Starts a session
 
