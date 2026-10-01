@@ -73,7 +73,7 @@ func (commander *Commander) Start(args []string) error {
 
 		// Rename the default window
 		commander.tmuxClient.RenameWindow(sessionName, "1", "Terminal")
-		commander.tmuxClient.NewWindow(sessionName, "Clea", worktreePath, "pi")
+		commander.tmuxClient.NewWindow(sessionName, "Opencode", worktreePath, "opencode")
 		commander.tmuxClient.NewWindow(sessionName, "Neovim", worktreePath, "nvim .")
 		commander.tmuxClient.NewWindow(sessionName, "Claude", worktreePath, "claude")
 	}

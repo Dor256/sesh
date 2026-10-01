@@ -32,10 +32,14 @@ func (commander *Commander) Load(args []string) error {
 		// Tmux state is clean
 		return nil
 	}
+	var worktreePath string
+	var sessionId string
 	for session, panes := range tmuxState {
 		for idx, pane := range panes {
+			// Worktree path is the same for each session
+			worktreePath = pane.Path
 			if idx == 0 {
-				commander.tmuxClient.Create(session, pane.Path)
+				sessionId = commander.tmuxClient.Create(session, pane.Path)
 				commander.tmuxClient.RenameWindow(session, "1", pane.Name)
 			} else {
 				commander.tmuxClient.NewWindow(session, pane.Name, pane.Path)
@@ -43,6 +47,7 @@ func (commander *Commander) Load(args []string) error {
 		}
 	}
 
+	commander.gitClient.SaveSessionId(worktreePath, sessionId)
 	commander.tmuxClient.AttachDefault()
 	return nil
 }
