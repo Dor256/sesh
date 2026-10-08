@@ -1,5 +1,6 @@
 package exec
 
+import "core:strings"
 import "core:os"
 
 Command_Error :: struct {
@@ -19,7 +20,7 @@ run_command :: proc(
 	error: Exec_Error,
 ) {
 	state, stdout, stderr, _ := os.process_exec(os.Process_Desc{command = command}, allocator)
-	out := string(stdout)
+	out := strings.trim_space(string(stdout))
 	err := string(stderr)
 
 	if !state.success do return "", Command_Error{reason = err}

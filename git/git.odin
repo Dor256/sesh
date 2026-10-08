@@ -7,8 +7,13 @@ Worktree :: struct {
 	branch: string,
 }
 
-create_worktree :: proc(branch_name, path: string) {
-	exec.run_command({"git", "worktree", "add", "-b", branch_name, path, "main"})
+create_worktree :: proc(branch_name, worktree_path: string, maybe_src_dir: Maybe(string) = nil) {
+	dir, ok := maybe_src_dir.?
+	if ok {
+		exec.run_command({"git", "-C", dir, "worktree", "add", "-b", branch_name, worktree_path, "main"})
+	} else {
+		exec.run_command({"git", "worktree", "add", "-b", branch_name, worktree_path, "main"})
+	}
 }
 
 destroy_worktree :: proc(path: string) {
